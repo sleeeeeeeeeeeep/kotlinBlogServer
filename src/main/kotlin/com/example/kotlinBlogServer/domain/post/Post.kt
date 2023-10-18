@@ -1,6 +1,8 @@
 package com.example.kotlinBlogServer.domain.post
 
 import com.example.kotlinBlogServer.domain.AuditingEntity
+import com.example.kotlinBlogServer.domain.comment.Comment
+import com.example.kotlinBlogServer.domain.member.Member
 import jakarta.persistence.*
 
 @Entity
@@ -8,7 +10,8 @@ import jakarta.persistence.*
 class Post(
 
     title: String,
-    content: String
+    content: String,
+    member: Member
 
 ) : AuditingEntity() {
 
@@ -18,6 +21,10 @@ class Post(
 
     @Column(name = "content")
     var content: String = content
+        private set
+
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Member::class)
+    var member: Member = member
         private set
 
 }

@@ -1,6 +1,8 @@
 package com.example.kotlinBlogServer.domain.member
 
 import com.example.kotlinBlogServer.domain.AuditingEntity
+import com.example.kotlinBlogServer.domain.comment.Comment
+import com.example.kotlinBlogServer.domain.post.Post
 import jakarta.persistence.*
 
 @Entity
@@ -9,7 +11,7 @@ class Member(
 
     email: String,
     password: String,
-    role: Role
+    role: Role,
 
 ) : AuditingEntity() {
 
