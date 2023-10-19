@@ -27,7 +27,8 @@ dependencies {
 	implementation("com.github.javafaker:javafaker:1.0.2")
 	// https://mvnrepository.com/artifact/io.github.serpro69/kotlin-faker
 	implementation("io.github.serpro69:kotlin-faker:1.15.0")
-
+	// https://mvnrepository.com/artifact/io.github.microutils/kotlin-logging
+	implementation("io.github.microutils:kotlin-logging:4.0.0-beta-2")
 
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 //	implementation("org.springframework.boot:spring-boot-starter-cache")
