@@ -27,5 +27,5 @@ abstract class AuditingEntityId : Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
-        private set
+        protected set
 }
