@@ -1,8 +1,6 @@
 package com.example.kotlinBlogServer.config
 
-import com.example.kotlinBlogServer.domain.member.Member
-import com.example.kotlinBlogServer.domain.member.MemberRepository
-import com.example.kotlinBlogServer.domain.member.Role
+import com.example.kotlinBlogServer.domain.member.*
 import io.github.serpro69.kfaker.faker
 import mu.two.KotlinLogging
 import org.springframework.boot.context.event.ApplicationReadyEvent
@@ -23,16 +21,23 @@ class InitData(
     private fun init(){
         log.info("와 로그다")
 
-        val member = Member(
+        // arraylist 같은 친구
+        val members = mutableListOf<Member>()
+
+        for (i in 1..100){
+            val member = generateMember()
+            log.info("시작 멤버 로그 $member")
+            members.add(member)
+        }
+
+        memberRepository.saveAll(members)
+    }
+
+    // 코틀린은 마지막 변수가 리턴임
+    // 바로 리턴 ㄱ
+    private fun generateMember(): Member = MemberSaveDto(
             email = faker.internet.safeEmail(),
             password = "1234",
             role = Role.USER
-        )
-
-        log.info("시작 멤버 로그 $member")
-
-
-        memberRepository.save(member)
-    }
-
+        ).toEntity()
 }
