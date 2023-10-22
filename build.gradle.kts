@@ -29,6 +29,9 @@ dependencies {
 	implementation("io.github.serpro69:kotlin-faker:1.15.0")
 	// https://mvnrepository.com/artifact/io.github.microutils/kotlin-logging
 	implementation("io.github.microutils:kotlin-logging:4.0.0-beta-2")
+	// https://mvnrepository.com/artifact/com.querydsl/querydsl-jpa
+	implementation("com.querydsl:querydsl-jpa:5.0.0")
+
 
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 //	implementation("org.springframework.boot:spring-boot-starter-cache")
