@@ -1,6 +1,7 @@
 package com.example.kotlinBlogServer.domain.post
 
 import com.example.kotlinBlogServer.domain.member.Member
+import com.example.kotlinBlogServer.domain.member.MemberRes
 
 data class PostSaveReq(
     val title: String,
@@ -15,3 +16,10 @@ fun PostSaveReq.toEntity(): Post {
         member = Member.createFakeMember(memberId)
     )
 }
+
+data class PostRes (
+    val id: Long,
+    val title: String,
+    val content: String,
+    val member: MemberRes
+)

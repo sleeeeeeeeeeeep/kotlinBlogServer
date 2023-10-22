@@ -38,7 +38,7 @@ class Member(
     }
 }
 
-fun Member.toDto() : MemberRes{
+fun Member.toDto() : MemberRes {
     return MemberRes(
         id = this.id!!,
         email = this.email,
