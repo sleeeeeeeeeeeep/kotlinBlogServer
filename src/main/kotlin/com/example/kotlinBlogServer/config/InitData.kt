@@ -26,11 +26,11 @@ class InitData(
     private fun init(){
         log.info("와 로그다")
 
-        val members = generateMembers(100)
-        memberRepository.saveAll(members)
-
-        val posts = generatePosts(100)
-        postRepository.saveAll(posts)
+//        val members = generateMembers(100)
+//        memberRepository.saveAll(members)
+//
+//        val posts = generatePosts(100)
+//        postRepository.saveAll(posts)
     }
 
     private fun generateMembers(cnt: Int) : MutableList<Member> {
