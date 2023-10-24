@@ -3,6 +3,7 @@ package com.example.kotlinBlogServer.api
 import com.example.kotlinBlogServer.domain.member.MemberRes
 import com.example.kotlinBlogServer.domain.member.MemberSaveReq
 import com.example.kotlinBlogServer.service.MemberService
+import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
@@ -30,7 +31,7 @@ class MemberController(
     }
 
     @PostMapping("/member")
-    fun save(@RequestBody dto: MemberSaveReq): MemberRes {
+    fun save(@Valid @RequestBody dto: MemberSaveReq): MemberRes {
         return memberService.saveMember(dto)
     }
 }
