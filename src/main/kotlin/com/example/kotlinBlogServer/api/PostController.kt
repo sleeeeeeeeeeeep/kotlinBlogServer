@@ -1,13 +1,13 @@
 package com.example.kotlinBlogServer.api
 
 import com.example.kotlinBlogServer.domain.post.PostRes
+import com.example.kotlinBlogServer.domain.post.PostSaveReq
 import com.example.kotlinBlogServer.service.PostService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 class PostController(
@@ -16,5 +16,20 @@ class PostController(
     @GetMapping("/posts")
     fun findPost(@PageableDefault(size = 10) pageable: Pageable) : ResponseEntity<Page<PostRes>> {
         return ResponseEntity.ok().body(postService.findAll(pageable))
+    }
+
+    @GetMapping("/posts/{id}")
+    fun findById(@PathVariable id: Long): ResponseEntity<PostRes> {
+        return ResponseEntity.ok().body(postService.findPostById(id))
+    }
+
+    @DeleteMapping("/posts/{id}")
+    fun deleteById(@PathVariable id: Long): ResponseEntity<Unit> {
+        return ResponseEntity.ok().body(postService.deleteMember(id))
+    }
+
+    @PostMapping("/posts")
+    fun save(@RequestBody dto: PostSaveReq): PostRes {
+        return postService.savePost(dto)
     }
 }

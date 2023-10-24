@@ -1,8 +1,6 @@
 package com.example.kotlinBlogServer.service
 
-import com.example.kotlinBlogServer.domain.member.MemberRepository
-import com.example.kotlinBlogServer.domain.member.MemberRes
-import com.example.kotlinBlogServer.domain.member.toDto
+import com.example.kotlinBlogServer.domain.member.*
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -19,4 +17,18 @@ class MemberService(
             it.toDto()
         }
 
+    @Transactional
+    fun saveMember(dto: MemberSaveReq): MemberRes {
+        return memberRepository.save(dto.toEntity()).toDto()
+    }
+
+    @Transactional
+    fun deleteMember(id: Long){
+        return memberRepository.deleteById(id)
+    }
+
+    @Transactional(readOnly = true)
+    fun findMemberById(id: Long): MemberRes {
+        return memberRepository.findById(id).orElseThrow().toDto()
+    }
 }
