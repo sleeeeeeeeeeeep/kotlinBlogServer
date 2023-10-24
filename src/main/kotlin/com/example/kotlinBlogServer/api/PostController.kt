@@ -18,17 +18,17 @@ class PostController(
         return ResponseEntity.ok().body(postService.findAll(pageable))
     }
 
-    @GetMapping("/posts/{id}")
+    @GetMapping("/post/{id}")
     fun findById(@PathVariable id: Long): ResponseEntity<PostRes> {
         return ResponseEntity.ok().body(postService.findPostById(id))
     }
 
-    @DeleteMapping("/posts/{id}")
+    @DeleteMapping("/post/{id}")
     fun deleteById(@PathVariable id: Long): ResponseEntity<Unit> {
         return ResponseEntity.ok().body(postService.deleteMember(id))
     }
 
-    @PostMapping("/posts")
+    @PostMapping("/post")
     fun save(@RequestBody dto: PostSaveReq): PostRes {
         return postService.savePost(dto)
     }
