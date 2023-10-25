@@ -9,15 +9,18 @@ import jakarta.validation.constraints.NotNull
  */
 data class MemberSaveReq(
     @field:NotNull(message = "이메일 있어야 함")
-    val email: String,
-    val password: String,
+    val email: String?,
+
+    @field:NotNull(message = "비번 있어야 함")
+    val password: String?,
+
     val role: Role,
 )
 
 fun MemberSaveReq.toEntity(): Member {
     return Member(
-        email = this.email,
-        password = this.password,
+        email = this.email ?: "",
+        password = this.password ?: "",
         role = this.role
     )
 }

@@ -3,6 +3,7 @@ package com.example.kotlinBlogServer.api
 import com.example.kotlinBlogServer.domain.post.PostRes
 import com.example.kotlinBlogServer.domain.post.PostSaveReq
 import com.example.kotlinBlogServer.service.PostService
+import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
@@ -29,7 +30,7 @@ class PostController(
     }
 
     @PostMapping("/post")
-    fun save(@RequestBody dto: PostSaveReq): PostRes {
+    fun save(@Valid @RequestBody dto: PostSaveReq): PostRes {
         return postService.savePost(dto)
     }
 }
