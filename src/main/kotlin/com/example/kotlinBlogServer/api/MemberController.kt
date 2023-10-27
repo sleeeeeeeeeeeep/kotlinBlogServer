@@ -3,6 +3,7 @@ package com.example.kotlinBlogServer.api
 import com.example.kotlinBlogServer.domain.member.MemberRes
 import com.example.kotlinBlogServer.domain.member.MemberSaveReq
 import com.example.kotlinBlogServer.service.MemberService
+import jakarta.servlet.http.HttpSession
 import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -10,13 +11,14 @@ import org.springframework.data.web.PageableDefault
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
+@RequestMapping("/needLogin")
 @RestController
 class MemberController(
     private val memberService: MemberService
 ) {
 
     @GetMapping("/members")
-    fun findAll(@PageableDefault(size = 10) pageable: Pageable): ResponseEntity<Page<MemberRes>> {
+    fun findAll(@PageableDefault(size = 10) pageable: Pageable, session: HttpSession): ResponseEntity<Page<MemberRes>> {
         return ResponseEntity.ok().body(memberService.findAll(pageable))
     }
 
