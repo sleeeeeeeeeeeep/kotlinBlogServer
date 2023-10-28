@@ -9,7 +9,7 @@ class FilterConfig {
     @Bean
     fun registMyAuthFilter(): FilterRegistrationBean<MyAuthFilter> {
         val bean = FilterRegistrationBean(MyAuthFilter())
-        bean.addUrlPatterns("/needLogin/*")
+        bean.addUrlPatterns("/api/*")
         bean.order = 0
 
         return bean
