@@ -25,7 +25,7 @@ class PostCustomRepositoryImpl(
         val results = queryFactory.listQuery<Post> {
             select(entity(Post::class))
             from(entity(Post::class))
-            fetch(Post::member)
+            //fetch(Post::member)
             limit(pageable.pageSize)
             offset(pageable.offset.toInt())
             orderBy(ExpressionOrderSpec(column(Post::id), false))
