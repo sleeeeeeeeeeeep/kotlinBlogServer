@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 class FilterConfig {
-    @Bean
+    //@Bean
     fun registMyAuthFilter(): FilterRegistrationBean<MyAuthFilter> {
         val bean = FilterRegistrationBean(MyAuthFilter())
         bean.addUrlPatterns("/api/*")
