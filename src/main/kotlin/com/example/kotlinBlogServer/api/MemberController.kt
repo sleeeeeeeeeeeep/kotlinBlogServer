@@ -1,7 +1,7 @@
 package com.example.kotlinBlogServer.api
 
 import com.example.kotlinBlogServer.domain.member.MemberRes
-import com.example.kotlinBlogServer.domain.member.MemberSaveReq
+import com.example.kotlinBlogServer.domain.member.LoginDto
 import com.example.kotlinBlogServer.service.MemberService
 import jakarta.servlet.http.HttpSession
 import jakarta.validation.Valid
@@ -33,7 +33,7 @@ class MemberController(
     }
 
     @PostMapping("/member")
-    fun save(@Valid @RequestBody dto: MemberSaveReq): MemberRes {
+    fun save(@Valid @RequestBody dto: LoginDto): MemberRes {
         return memberService.saveMember(dto)
     }
 }

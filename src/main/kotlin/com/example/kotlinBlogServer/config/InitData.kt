@@ -61,7 +61,7 @@ class InitData(
 
     // 코틀린은 마지막 변수가 리턴임
     // 바로 리턴 ㄱ
-    private fun generateMember(): Member = MemberSaveReq(
+    private fun generateMember(): Member = LoginDto(
         email = faker.internet.safeEmail(),
         password = "1234",
         role = Role.USER

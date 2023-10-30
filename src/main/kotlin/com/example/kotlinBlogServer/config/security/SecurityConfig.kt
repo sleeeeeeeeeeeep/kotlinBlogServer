@@ -1,14 +1,18 @@
 package com.example.kotlinBlogServer.config.security
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import mu.two.KotlinLogging
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
@@ -16,18 +20,19 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = false)
 class SecurityConfig (
-
+    private val authenticationConfiguration: AuthenticationConfiguration,
+    private val objectMapper: ObjectMapper
 ) {
     private val log = KotlinLogging.logger {  }
 
-    @Bean
+    //@Bean
     fun webSecurityCustomizer(): WebSecurityCustomizer? {
         return WebSecurityCustomizer { web: WebSecurity ->
             web.ignoring()
                 .requestMatchers(AntPathRequestMatcher("/h2-console/**"))
-                .requestMatchers(AntPathRequestMatcher("//**"))
+                .requestMatchers(AntPathRequestMatcher("/**"))
         }
     }
 
@@ -48,8 +53,22 @@ class SecurityConfig (
                 sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             }
             .cors { cors -> cors.configurationSource(corsConfig()) }
+            .addFilter(loginFilter())
 
         return http.build()
+    }
+
+    @Bean
+    fun authenticationManager(): AuthenticationManager {
+        return authenticationConfiguration.authenticationManager
+    }
+
+    @Bean
+    fun loginFilter(): UsernamePasswordAuthenticationFilter {
+        val authenticationFilter = CustomUserNameAuthenticationFilter(objectMapper)
+        authenticationFilter.setAuthenticationManager(authenticationManager())
+
+        return authenticationFilter
     }
 
     @Bean
