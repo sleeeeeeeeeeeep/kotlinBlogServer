@@ -6,6 +6,6 @@ sealed class EntityNotFoundException(message: String?): BusinessException(
 ) {
 }
 
-class MemberNotFoundException(id:Long): EntityNotFoundException(
+class MemberNotFoundException(id:String): EntityNotFoundException(
     "$id 없음"
 )

@@ -1,5 +1,6 @@
 package com.example.kotlinBlogServer.exception
 
+import jakarta.persistence.NoResultException
 import mu.two.KotlinLogging
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -22,6 +23,14 @@ class GlobalExceptionHandler {
     @ExceptionHandler(EntityNotFoundException::class)
     fun handleEntityNotFoundException(e:EntityNotFoundException): ResponseEntity<ErrorResponse> {
         log.error{"handleMethodArgumentNotValidException $e"}
+        val of = ErrorResponse.of(ErrorCode.ENTITY_NOT_FOUND)
+
+        return ResponseEntity(of, HttpStatus.INTERNAL_SERVER_ERROR)
+    }
+
+    @ExceptionHandler(NoResultException::class)
+    fun handleNoResultException(e:EntityNotFoundException): ResponseEntity<ErrorResponse> {
+        log.error{"handleNoResultException $e"}
         val of = ErrorResponse.of(ErrorCode.ENTITY_NOT_FOUND)
 
         return ResponseEntity(of, HttpStatus.INTERNAL_SERVER_ERROR)

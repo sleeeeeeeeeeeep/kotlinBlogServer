@@ -32,7 +32,7 @@ class MemberService(
     fun findMemberById(id: Long): MemberRes {
         return memberRepository.findById(id)
             .orElseThrow {
-            throw MemberNotFoundException(id)
+            throw MemberNotFoundException(id.toString())
         }.toDto()
     }
 }
