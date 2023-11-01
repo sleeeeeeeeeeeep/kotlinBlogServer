@@ -46,7 +46,7 @@ class CustomUserNameAuthenticationFilter (
         val principalDetails = authResult?.principal as PrincipalDetails
         val jwtToken = jwtManager.generateAccessToken(principalDetails)
 
-        response?.addHeader("Authorization", "Bearer " + jwtToken)
+        response?.addHeader(jwtManager.jwtHeader, "Bearer $jwtToken")
 
     }
 }

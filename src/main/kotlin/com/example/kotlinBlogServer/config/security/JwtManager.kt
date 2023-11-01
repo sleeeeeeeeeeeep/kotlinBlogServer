@@ -9,10 +9,11 @@ class JwtManager {
 
     private val log = KotlinLogging.logger {  }
 
-    private val secretKey: String = "aslfhlkadfj"
+    private val secretKey: String = "asdf"
     private val claimEmail = "email"
     private val claimPassword = "password"
     private val expireTime = 1000*60*60
+    val jwtHeader = "Authorization"
 
 
     fun generateAccessToken(principal: PrincipalDetails): String {
