@@ -11,7 +11,7 @@ import org.springframework.data.web.PageableDefault
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
-@RequestMapping("/api")
+@RequestMapping("/v1")
 @RestController
 class MemberController(
     private val memberService: MemberService

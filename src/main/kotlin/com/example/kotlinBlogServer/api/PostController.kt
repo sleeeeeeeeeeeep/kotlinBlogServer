@@ -10,6 +10,7 @@ import org.springframework.data.web.PageableDefault
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
+@RequestMapping("/v1")
 @RestController
 class PostController(
     private val postService: PostService

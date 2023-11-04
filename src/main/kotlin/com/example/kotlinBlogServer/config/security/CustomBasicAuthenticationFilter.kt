@@ -22,12 +22,15 @@ class CustomBasicAuthenticationFilter(
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, chain: FilterChain) {
         log.info { "권한 필요한 요청" }
 
-        val token = request.getHeader(jwtManager.jwtHeader).replace("Bearer ", "")
+        val token = request.getHeader(jwtManager.authorizationHeader)?.replace("Bearer ", "")
+        if(token == null){
+            log.info { "토큰 없음" }
 
-        if (token == null) {
             chain.doFilter(request, response)
             return
         }
+
+
         log.debug("토큰: $token")
 
         val memberEmail = jwtManager.getMemberEmail(token) ?: throw RuntimeException("멤버 이메일 못 찾음")
@@ -37,7 +40,8 @@ class CustomBasicAuthenticationFilter(
 
         val authentication: Authentication = UsernamePasswordAuthenticationToken(
             principalDetails,
-            principalDetails.password
+            principalDetails.password,
+            principalDetails.authorities
         )
 
         SecurityContextHolder.getContext().authentication = authentication
