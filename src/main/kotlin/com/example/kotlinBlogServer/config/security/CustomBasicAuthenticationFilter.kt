@@ -1,6 +1,7 @@
 package com.example.kotlinBlogServer.config.security
 
 import com.example.kotlinBlogServer.domain.member.MemberRepository
+import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -13,6 +14,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 class CustomBasicAuthenticationFilter(
     private val memberRepository: MemberRepository,
+    private val om: ObjectMapper,
     authenticationManager: AuthenticationManager
 ): BasicAuthenticationFilter(authenticationManager) {
 
@@ -33,10 +35,11 @@ class CustomBasicAuthenticationFilter(
 
         log.debug("토큰: $token")
 
-        val memberEmail = jwtManager.getMemberEmail(token) ?: throw RuntimeException("멤버 이메일 못 찾음")
-        val member = memberRepository.findMemberByEmail(memberEmail)
+        val principalJsonData = jwtManager.getPrincipalByAccessToken(token)
+        val principalDetails = om.readValue(principalJsonData, PrincipalDetails::class.java)
 
-        val principalDetails = PrincipalDetails(member)
+        // val member = memberRepository.findMemberByEmail(details.member.email)
+        // val principalDetails = PrincipalDetails(member)
 
         val authentication: Authentication = UsernamePasswordAuthenticationToken(
             principalDetails,
