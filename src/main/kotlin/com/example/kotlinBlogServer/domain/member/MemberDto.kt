@@ -1,6 +1,8 @@
 package com.example.kotlinBlogServer.domain.member
 
 import jakarta.validation.constraints.NotNull
+import org.springframework.data.annotation.CreatedDate
+import java.time.LocalDateTime
 
 /**
  * dto <-> entity 간 매핑 스타일
@@ -30,4 +32,6 @@ data class MemberRes(
     val email: String,
     val password: String,
     val role: Role,
+    val createdAt: LocalDateTime,
+    val updatedAt: LocalDateTime,
 )
