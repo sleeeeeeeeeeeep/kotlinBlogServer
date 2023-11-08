@@ -20,6 +20,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.AuthenticationEntryPoint
@@ -28,6 +29,7 @@ import org.springframework.security.web.access.AccessDeniedHandler
 import org.springframework.security.web.authentication.AuthenticationFailureHandler
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
@@ -82,8 +84,31 @@ class SecurityConfig (
                     .requestMatchers(AntPathRequestMatcher("/v1/posts")).hasAnyRole("USER", "ADMIN")
                     .anyRequest().permitAll()
             }
+            .logout { logout ->
+                logout
+                    .logoutUrl("/logout")
+                    .logoutSuccessHandler(CustomLogoutSuccessHandler())
+            }
 
         return http.build()
+    }
+
+    class CustomLogoutSuccessHandler(
+
+    ):LogoutSuccessHandler {
+
+        private val log = KotlinLogging.logger {  }
+        override fun onLogoutSuccess(
+            request: HttpServletRequest?,
+            response: HttpServletResponse?,
+            authentication: Authentication?
+        ) {
+            log.info { "로그아웃 성공" }
+
+            val context = SecurityContextHolder.getContext()
+            context.authentication = null
+            SecurityContextHolder.clearContext()
+        }
     }
 
     class CustomAuthenticationEntryPoint: AuthenticationEntryPoint {
