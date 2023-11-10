@@ -10,35 +10,56 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 class JwtManager(
-    private val accessTokenExpireSecond: Long = 300
+    private val accessTokenExpireSecond: Long = 60,
+    private val refreshTokenExpireDay: Long = 7
+
 ) {
 
     private val log = KotlinLogging.logger {  }
 
-    private val secretKey: String = "TempSecretKey"
+    private val accessSecretKey: String = "TempAccessSecretKey"
+    private val refreshSecretKey: String = "TempRefreshSecretKey"
+
     private val claimEmail = "email"
     val claimPrincipal = "principal"
+
     val authorizationHeader = "Authorization"
     val jwtHeader = "Bearer"
     private val jwtSubject = "my-token"
 
 
+    fun generateRefreshToken(principal: String): String{
+        val expireDate = Date(
+            System.currentTimeMillis() + TimeUnit.DAYS.toMillis(refreshTokenExpireDay)
+        )
+
+        log.info { "refresh token 만료: $expireDate" }
+
+        return generateToken(expireDate, principal, refreshSecretKey)
+    }
+
     fun generateAccessToken(principal: String): String {
         val expireDate = Date(
-            System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(accessTokenExpireSecond)
+            System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(accessTokenExpireSecond)
         )
 
         log.info { "access token 만료: $expireDate" }
 
-        return JWT.create()
-            .withSubject(jwtSubject)
-            .withExpiresAt(expireDate)
-            .withClaim(claimPrincipal, principal)
-            .sign(Algorithm.HMAC512(secretKey))
+        return generateToken(expireDate, principal, accessSecretKey)
     }
 
+    private fun generateToken(
+        expireDate: Date,
+        principal: String,
+        secretKey: String
+    ): String = JWT.create()
+        .withSubject(jwtSubject)
+        .withExpiresAt(expireDate)
+        .withClaim(claimPrincipal, principal)
+        .sign(Algorithm.HMAC512(secretKey))
+
     fun getMemberEmail(token: String): String? {
-        return JWT.require(Algorithm.HMAC512(secretKey)).build()
+        return JWT.require(Algorithm.HMAC512(accessSecretKey)).build()
             .verify(token)
             .getClaim(claimEmail)
             .asString()
@@ -52,10 +73,12 @@ class JwtManager(
 
     fun validatedJwt(accessToken: String): DecodedJWT {
         try {
-            val verifier: JWTVerifier = JWT.require(Algorithm.HMAC512(secretKey))
+            val verifier: JWTVerifier = JWT.require(Algorithm.HMAC512(accessSecretKey))
                 .build()
             val jwt: DecodedJWT = verifier.verify(accessToken)
             val principal = jwt.getClaim(claimPrincipal).asString()
+
+            log.info { principal }
 
             return jwt
         } catch (e: JWTVerificationException) {

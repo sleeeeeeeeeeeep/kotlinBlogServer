@@ -2,7 +2,6 @@ package com.example.kotlinBlogServer.domain.post
 
 import com.example.kotlinBlogServer.domain.AuditingEntity
 import com.example.kotlinBlogServer.domain.member.Member
-import com.example.kotlinBlogServer.domain.member.toDto
 import jakarta.persistence.*
 
 @Entity
