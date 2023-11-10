@@ -1,14 +1,17 @@
 package com.example.kotlinBlogServer.config.security
 
 import com.example.kotlinBlogServer.domain.member.LoginDto
+import com.example.kotlinBlogServer.util.value.CookieProvider
 import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import mu.two.KotlinLogging
+import org.springframework.http.HttpHeaders
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import java.util.concurrent.TimeUnit
 
 class CustomUserNameAuthenticationFilter (
     private val om: ObjectMapper
@@ -47,9 +50,14 @@ class CustomUserNameAuthenticationFilter (
         val accessToken = jwtManager.generateAccessToken(om.writeValueAsString(principalDetails))
         val refreshToken = jwtManager.generateAccessToken(om.writeValueAsString(principalDetails))
 
+        val refreshCookie = CookieProvider.createCookie(
+            "refreshCookie",
+            refreshToken,
+            TimeUnit.DAYS.toSeconds(jwtManager.refreshTokenExpireDay)
+        )
 
         response?.addHeader(jwtManager.authorizationHeader, "${jwtManager.jwtHeader} $accessToken")
-        response?.addHeader("refresh token", "${jwtManager.jwtHeader} $refreshToken")
+        response?.addHeader(HttpHeaders.SET_COOKIE, refreshToken.toString())
 
 
     }

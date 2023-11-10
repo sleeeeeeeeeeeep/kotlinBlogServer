@@ -10,8 +10,8 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 class JwtManager(
-    private val accessTokenExpireSecond: Long = 60,
-    private val refreshTokenExpireDay: Long = 7
+    accessTokenExpireSecond: Long = 60,
+    refreshTokenExpireDay: Long = 7
 
 ) {
 
@@ -22,6 +22,9 @@ class JwtManager(
 
     private val claimEmail = "email"
     val claimPrincipal = "principal"
+
+    private val accessTokenExpireSecond = accessTokenExpireSecond
+    val refreshTokenExpireDay = refreshTokenExpireDay
 
     val authorizationHeader = "Authorization"
     val jwtHeader = "Bearer"
