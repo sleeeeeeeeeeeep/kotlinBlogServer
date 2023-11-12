@@ -68,27 +68,53 @@ class JwtManager(
             .asString()
     }
 
-    fun getPrincipalByAccessToken(accessToken: String): String? {
-        val decodedJWT = validatedJwt(accessToken)
+    fun getPrincipalByAccessToken(accessToken: String): String {
 
+        val decodedJWT = getDecodeJwt(secretKey = accessSecretKey, token = accessToken)
         return decodedJWT.getClaim(claimPrincipal).asString()
+
     }
 
-    fun validatedJwt(accessToken: String): DecodedJWT {
-        try {
-            val verifier: JWTVerifier = JWT.require(Algorithm.HMAC512(accessSecretKey))
-                .build()
-            val jwt: DecodedJWT = verifier.verify(accessToken)
-            val principal = jwt.getClaim(claimPrincipal).asString()
+    fun getPrincipalByRefreshToken(refreshToken: String): String {
 
-            log.info { principal }
+        val decodedJWT = getDecodeJwt(secretKey = refreshSecretKey, token = refreshToken)
+        return decodedJWT.getClaim(claimPrincipal).asString()
 
-            return jwt
+    }
+
+    private fun getDecodeJwt(secretKey: String, token: String): DecodedJWT {
+        val verifier: JWTVerifier = JWT.require(Algorithm.HMAC512(secretKey))
+            .build()
+
+        return verifier.verify(token)
+    }
+
+    fun validAccessToken(token: String): TokenValidResult {
+        return validatedJwt(secretKey = accessSecretKey, token = token)
+    }
+
+    fun validRefreshToken(token: String): TokenValidResult {
+        return validatedJwt(secretKey = refreshSecretKey, token = token)
+    }
+
+    fun validatedJwt(secretKey: String, token: String): TokenValidResult {
+        return try {
+
+            getDecodeJwt(secretKey, token)
+            TokenValidResult.Success()
+
         } catch (e: JWTVerificationException) {
-            log.error{ "error: ${e.stackTraceToString()}" }
 
-            throw RuntimeException("jwt 유효하지 않음")
+            //log.error{ "error: ${e.stackTraceToString()}" }
+            TokenValidResult.Failure(e)
+
         }
     }
 
+
+}
+
+sealed class TokenValidResult {
+    class Success(val successValue: Boolean = true): TokenValidResult()
+    class Failure(val exception: JWTVerificationException): TokenValidResult()
 }

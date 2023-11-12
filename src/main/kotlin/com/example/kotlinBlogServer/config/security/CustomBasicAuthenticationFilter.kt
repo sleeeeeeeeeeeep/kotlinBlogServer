@@ -1,5 +1,6 @@
 package com.example.kotlinBlogServer.config.security
 
+import com.auth0.jwt.exceptions.TokenExpiredException
 import com.example.kotlinBlogServer.domain.member.MemberRepository
 import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.servlet.FilterChain
@@ -24,18 +25,25 @@ class CustomBasicAuthenticationFilter(
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, chain: FilterChain) {
         log.info { "권한 필요한 요청" }
 
-        val token = request.getHeader(jwtManager.authorizationHeader)?.replace("Bearer ", "")
-        if(token == null){
+        val accessToken = request.getHeader(jwtManager.authorizationHeader)?.replace("Bearer ", "")
+        if(accessToken == null){
             log.info { "토큰 없음" }
-
             chain.doFilter(request, response)
             return
         }
 
+        log.debug("액세스 토큰: $accessToken")
+        val accessTokenValidResult = jwtManager.validAccessToken(accessToken)
 
-        log.debug("토큰: $token")
+        if(accessTokenValidResult is TokenValidResult.Failure){
+            if(accessTokenValidResult.exception is TokenExpiredException) {
+                log.info { accessTokenValidResult }
+            } else {
+                log.error { accessTokenValidResult.exception.stackTraceToString() }
+            }
+        }
 
-        val principalJsonData = jwtManager.getPrincipalByAccessToken(token)
+        val principalJsonData = jwtManager.getPrincipalByAccessToken(accessToken)
         val principalDetails = om.readValue(principalJsonData, PrincipalDetails::class.java)
 
         // val member = memberRepository.findMemberByEmail(details.member.email)
@@ -50,4 +58,25 @@ class CustomBasicAuthenticationFilter(
         SecurityContextHolder.getContext().authentication = authentication
         chain.doFilter(request, response)
     }
+
+//    private fun reissueAccessToken(
+//        e: JWTVerificationException,
+//        request: HttpServletRequest?
+//    ) {
+//        if (e is TokenExpiredException) {
+//            val refreshToken = CookieProvider.getCookie(request!!, "refreshCookie").orElseThrow()
+//            val validateJwt = validatedJwt(refreshToken)
+//
+//            val principalString = getPrincipalByAccessToken(refreshToken)
+//            val principalDetails = ObjectMapper().readValue(principalString, PrincipalDetails::class.java)
+//
+//            val authentication: Authentication = UsernamePasswordAuthenticationToken(
+//                principalDetails,
+//                principalDetails.password,
+//                principalDetails.authorities
+//            )
+//
+//            SecurityContextHolder.getContext().authentication = authentication
+//        }
+//    }
 }
