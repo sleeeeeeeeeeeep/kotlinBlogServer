@@ -12,8 +12,8 @@ object CookieProvider {
         TODO()
     }
 
-    fun createCookie(cookieName: String, value: String, maxAge: Long): ResponseCookie {
-        return ResponseCookie.from(cookieName, value)
+    fun createCookie(cookieName: CookieName, value: String, maxAge: Long): ResponseCookie {
+        return ResponseCookie.from(cookieName.name, value)
             .httpOnly(true)
             .secure(false)
             .path("/")
@@ -21,9 +21,9 @@ object CookieProvider {
             .build()
     }
 
-    fun getCookie(request: HttpServletRequest, cookieName: String): Optional<String> {
+    fun getCookie(request: HttpServletRequest, cookieName: CookieName): Optional<String> {
         val cookieValue = request.cookies.filter { cookie ->
-            cookie.name == cookieName
+            cookie.name == cookieName.name
         }.map { cookie ->
             cookie.value
         }.firstOrNull()
@@ -31,6 +31,10 @@ object CookieProvider {
         log.info { "cookieValue: $cookieValue" }
 
         return Optional.ofNullable(cookieValue)
+    }
+
+    enum class CookieName{
+        REFRESH_COOKIE
     }
 
 }

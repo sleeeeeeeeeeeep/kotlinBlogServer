@@ -2,6 +2,7 @@ package com.example.kotlinBlogServer.config.security
 
 import com.auth0.jwt.exceptions.TokenExpiredException
 import com.example.kotlinBlogServer.domain.member.MemberRepository
+import com.example.kotlinBlogServer.util.value.CookieProvider
 import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
@@ -37,7 +38,33 @@ class CustomBasicAuthenticationFilter(
 
         if(accessTokenValidResult is TokenValidResult.Failure){
             if(accessTokenValidResult.exception is TokenExpiredException) {
-                log.info { accessTokenValidResult }
+                log.info { accessTokenValidResult.exception.javaClass }
+
+                val refreshToken = CookieProvider.getCookie(request, CookieProvider.CookieName.REFRESH_COOKIE).orElseThrow()
+                val refreshTokenResult = jwtManager.validRefreshToken(refreshToken)
+
+                if(refreshTokenResult is TokenValidResult.Failure){
+                    throw RuntimeException("리프레시 토큰 유효하지 않음")
+                }
+
+                val principalString = jwtManager.getPrincipalByRefreshToken(refreshToken)
+                val details = om.readValue(principalString, PrincipalDetails::class.java)
+
+                val accessToken = jwtManager.generateAccessToken(om.writeValueAsString(details))
+                response?.addHeader(jwtManager.authorizationHeader, "${jwtManager.jwtHeader} $accessToken")
+
+
+                val authentication: Authentication = UsernamePasswordAuthenticationToken(
+                    details,
+                    details.password,
+                    details.authorities
+                )
+
+                SecurityContextHolder.getContext().authentication = authentication
+                chain.doFilter(request, response)
+
+                return
+
             } else {
                 log.error { accessTokenValidResult.exception.stackTraceToString() }
             }
@@ -59,24 +86,4 @@ class CustomBasicAuthenticationFilter(
         chain.doFilter(request, response)
     }
 
-//    private fun reissueAccessToken(
-//        e: JWTVerificationException,
-//        request: HttpServletRequest?
-//    ) {
-//        if (e is TokenExpiredException) {
-//            val refreshToken = CookieProvider.getCookie(request!!, "refreshCookie").orElseThrow()
-//            val validateJwt = validatedJwt(refreshToken)
-//
-//            val principalString = getPrincipalByAccessToken(refreshToken)
-//            val principalDetails = ObjectMapper().readValue(principalString, PrincipalDetails::class.java)
-//
-//            val authentication: Authentication = UsernamePasswordAuthenticationToken(
-//                principalDetails,
-//                principalDetails.password,
-//                principalDetails.authorities
-//            )
-//
-//            SecurityContextHolder.getContext().authentication = authentication
-//        }
-//    }
 }
