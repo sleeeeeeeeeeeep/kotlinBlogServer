@@ -35,9 +35,9 @@ class CustomBasicAuthenticationFilter(
 
         log.debug("액세스 토큰: $accessToken")
         val accessTokenValidResult = jwtManager.validAccessToken(accessToken)
-
         if(accessTokenValidResult is TokenValidResult.Failure){
-            if(accessTokenValidResult.exception is TokenExpiredException) {
+
+            handleTokenException(accessTokenValidResult) {
                 log.info { accessTokenValidResult.exception.javaClass }
 
                 val refreshToken = CookieProvider.getCookie(request, CookieProvider.CookieName.REFRESH_COOKIE).orElseThrow()
@@ -50,32 +50,25 @@ class CustomBasicAuthenticationFilter(
                 val principalString = jwtManager.getPrincipalByRefreshToken(refreshToken)
                 val details = om.readValue(principalString, PrincipalDetails::class.java)
 
-                val accessToken = jwtManager.generateAccessToken(om.writeValueAsString(details))
-                response?.addHeader(jwtManager.authorizationHeader, "${jwtManager.jwtHeader} $accessToken")
+                reissueAccessToken(details, response)
+                setAuthentication(details, chain, request, response)
 
-
-                val authentication: Authentication = UsernamePasswordAuthenticationToken(
-                    details,
-                    details.password,
-                    details.authorities
-                )
-
-                SecurityContextHolder.getContext().authentication = authentication
-                chain.doFilter(request, response)
-
-                return
-
-            } else {
-                log.error { accessTokenValidResult.exception.stackTraceToString() }
             }
+            return
         }
 
         val principalJsonData = jwtManager.getPrincipalByAccessToken(accessToken)
         val principalDetails = om.readValue(principalJsonData, PrincipalDetails::class.java)
 
-        // val member = memberRepository.findMemberByEmail(details.member.email)
-        // val principalDetails = PrincipalDetails(member)
+        setAuthentication(principalDetails, chain, request, response)
+    }
 
+    private fun setAuthentication(
+        principalDetails: PrincipalDetails,
+        chain: FilterChain,
+        request: HttpServletRequest,
+        response: HttpServletResponse
+    ) {
         val authentication: Authentication = UsernamePasswordAuthenticationToken(
             principalDetails,
             principalDetails.password,
@@ -84,6 +77,25 @@ class CustomBasicAuthenticationFilter(
 
         SecurityContextHolder.getContext().authentication = authentication
         chain.doFilter(request, response)
+    }
+
+    private fun reissueAccessToken(
+        details: PrincipalDetails?,
+        response: HttpServletResponse
+    ) {
+        val accessToken = jwtManager.generateAccessToken(om.writeValueAsString(details))
+        response.addHeader(jwtManager.authorizationHeader, "${jwtManager.jwtHeader} $accessToken")
+    }
+
+    private fun handleTokenException(tokenValidResult: TokenValidResult.Failure, func:() -> Unit){
+        when(tokenValidResult.exception){
+            is TokenExpiredException -> func()
+            else -> {
+                log.error(tokenValidResult.exception.stackTraceToString())
+
+                throw tokenValidResult.exception
+            }
+        }
     }
 
 }
