@@ -32,7 +32,7 @@ class CustomUserNameAuthenticationFilter (
             log.error { "로그인 필터: 로그인 dto 생성 실패    $e" }
         }
 
-        val authenticationToken = UsernamePasswordAuthenticationToken(loginDto.email, loginDto.password)
+        val authenticationToken = UsernamePasswordAuthenticationToken(loginDto.email, loginDto.rawPassword)
 
         return authenticationManager.authenticate(authenticationToken)
     }

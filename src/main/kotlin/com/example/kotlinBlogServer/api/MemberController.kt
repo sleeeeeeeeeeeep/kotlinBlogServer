@@ -1,10 +1,8 @@
 package com.example.kotlinBlogServer.api
 
 import com.example.kotlinBlogServer.domain.member.MemberRes
-import com.example.kotlinBlogServer.domain.member.LoginDto
 import com.example.kotlinBlogServer.service.MemberService
 import jakarta.servlet.http.HttpSession
-import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
@@ -32,8 +30,4 @@ class MemberController(
         return ResponseEntity.ok().body(memberService.deleteMember(id))
     }
 
-    @PostMapping("/member")
-    fun save(@Valid @RequestBody dto: LoginDto): MemberRes {
-        return memberService.saveMember(dto)
-    }
 }

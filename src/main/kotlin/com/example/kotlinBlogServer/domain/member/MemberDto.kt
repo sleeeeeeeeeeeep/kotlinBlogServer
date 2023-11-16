@@ -1,7 +1,8 @@
 package com.example.kotlinBlogServer.domain.member
 
+import com.example.kotlinBlogServer.config.BeanAccessor
 import jakarta.validation.constraints.NotNull
-import org.springframework.data.annotation.CreatedDate
+import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.LocalDateTime
 
 /**
@@ -14,17 +15,20 @@ data class LoginDto(
     val email: String?,
 
     @field:NotNull(message = "비번 있어야 함")
-    val password: String?,
+    val rawPassword: String?,
 
     val role: Role?,
-)
+) {
+    fun toEntity(): Member {
+        return Member(
+            email = this.email ?: "",
+            password = encodeRawPassword() ?: "",
+            role = this.role?: Role.USER
+        )
+    }
 
-fun LoginDto.toEntity(): Member {
-    return Member(
-        email = this.email ?: "",
-        password = this.password ?: "",
-        role = this.role?: Role.USER
-    )
+    private fun encodeRawPassword(): String =
+        BeanAccessor.getBean(PasswordEncoder::class).encode(this.rawPassword)
 }
 
 data class MemberRes(

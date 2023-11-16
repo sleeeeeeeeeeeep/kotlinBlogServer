@@ -1,6 +1,9 @@
 package com.example.kotlinBlogServer.config
 
-import com.example.kotlinBlogServer.domain.member.*
+import com.example.kotlinBlogServer.domain.member.LoginDto
+import com.example.kotlinBlogServer.domain.member.Member
+import com.example.kotlinBlogServer.domain.member.MemberRepository
+import com.example.kotlinBlogServer.domain.member.Role
 import com.example.kotlinBlogServer.domain.post.Post
 import com.example.kotlinBlogServer.domain.post.PostRepository
 import com.example.kotlinBlogServer.domain.post.PostSaveReq
@@ -10,13 +13,15 @@ import mu.two.KotlinLogging
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.event.EventListener
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 // 더미데이터 생성용
 
 @Configuration
 class InitData(
     private val memberRepository: MemberRepository,
-    private val postRepository: PostRepository
+    private val postRepository: PostRepository,
+    private val encoder: BCryptPasswordEncoder
 ) {
     val faker = faker { }
     private val log = KotlinLogging.logger { }
@@ -63,7 +68,7 @@ class InitData(
     // 바로 리턴 ㄱ
     private fun generateMember(): Member = LoginDto(
         email = faker.internet.safeEmail(),
-        password = "1234",
+        rawPassword = "1234",
         role = Role.USER
     ).toEntity()
 
