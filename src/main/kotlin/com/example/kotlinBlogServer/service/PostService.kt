@@ -15,8 +15,8 @@ class PostService (
     //@PreAuthorize("hasAuthority('ADMIN')")
     @Secured(*["ROLE_SUPER", "ROLE_ADMIN"])
     @Transactional(readOnly = true)
-    fun findAll(pageable: Pageable): Page<PostRes> =
-        postRepository.findPosts(pageable).map {
+    fun findAll(pageable: Pageable, keyword: String): Page<PostRes> =
+        postRepository.findPosts(pageable, keyword).map {
             it.toDto()
         }
 

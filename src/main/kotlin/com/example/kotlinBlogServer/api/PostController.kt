@@ -16,8 +16,9 @@ class PostController(
     private val postService: PostService
 ) {
     @GetMapping("/posts")
-    fun findPost(@PageableDefault(size = 10) pageable: Pageable) : ResponseEntity<Page<PostRes>> {
-        return ResponseEntity.ok().body(postService.findAll(pageable))
+    fun findPost(@PageableDefault(size = 10) pageable: Pageable,
+                 @RequestParam(required = false) keyword: String) : ResponseEntity<Page<PostRes>> {
+        return ResponseEntity.ok().body(postService.findAll(pageable, keyword))
     }
 
     @GetMapping("/post/{id}")

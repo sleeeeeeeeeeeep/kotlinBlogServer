@@ -1,10 +1,12 @@
 package com.example.kotlinBlogServer.domain.post
 
+import com.example.kotlinBlogServer.util.`fun`.dynamicQuery
 import com.linecorp.kotlinjdsl.query.spec.ExpressionOrderSpec
 import com.linecorp.kotlinjdsl.querydsl.expression.column
 import com.linecorp.kotlinjdsl.querydsl.from.fetch
 import com.linecorp.kotlinjdsl.spring.data.SpringDataQueryFactory
 import com.linecorp.kotlinjdsl.spring.data.listQuery
+import jakarta.persistence.criteria.JoinType
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
@@ -14,18 +16,20 @@ interface PostRepository : JpaRepository<Post, Long>, PostCustomRepository {
 }
 
 interface PostCustomRepository{
-
-    fun findPosts(pageable: Pageable): Page<Post>
+    fun findPosts(pageable: Pageable, title: String): Page<Post>
 }
 
 class PostCustomRepositoryImpl(
     private val queryFactory: SpringDataQueryFactory
 ): PostCustomRepository {
-    override fun findPosts(pageable: Pageable): Page<Post> {
+    override fun findPosts(pageable: Pageable, title: String): Page<Post> {
         val results = queryFactory.listQuery<Post> {
             select(entity(Post::class))
             from(entity(Post::class))
-            //fetch(Post::member)
+            where(
+                dynamicQuery(title = title)
+            )
+            fetch(Post::member, joinType = JoinType.LEFT)
             limit(pageable.pageSize)
             offset(pageable.offset.toInt())
             orderBy(ExpressionOrderSpec(column(Post::id), false))
@@ -40,4 +44,5 @@ class PostCustomRepositoryImpl(
             countQuery.size.toLong()
         }
     }
+
 }
