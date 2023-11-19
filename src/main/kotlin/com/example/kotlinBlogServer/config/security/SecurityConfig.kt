@@ -44,7 +44,7 @@ class SecurityConfig (
 ) {
     private val log = KotlinLogging.logger {  }
 
-    //@Bean
+    @Bean
     fun webSecurityCustomizer(): WebSecurityCustomizer? {
         return WebSecurityCustomizer { web: WebSecurity ->
             web.ignoring()

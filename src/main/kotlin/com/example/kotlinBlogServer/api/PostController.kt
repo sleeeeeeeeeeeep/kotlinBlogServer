@@ -3,6 +3,7 @@ package com.example.kotlinBlogServer.api
 import com.example.kotlinBlogServer.domain.post.PostRes
 import com.example.kotlinBlogServer.domain.post.PostSaveReq
 import com.example.kotlinBlogServer.service.PostService
+import com.example.kotlinBlogServer.util.dto.Search
 import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -17,8 +18,8 @@ class PostController(
 ) {
     @GetMapping("/posts")
     fun findPost(@PageableDefault(size = 10) pageable: Pageable,
-                 @RequestParam(required = false) keyword: String) : ResponseEntity<Page<PostRes>> {
-        return ResponseEntity.ok().body(postService.findAll(pageable, keyword))
+                 @RequestBody search: Search) : ResponseEntity<Page<PostRes>> {
+        return ResponseEntity.ok().body(postService.findAll(pageable, search))
     }
 
     @GetMapping("/post/{id}")

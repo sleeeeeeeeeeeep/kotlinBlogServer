@@ -1,5 +1,6 @@
 package com.example.kotlinBlogServer.domain.post
 
+import com.example.kotlinBlogServer.util.dto.SearchCondition
 import com.example.kotlinBlogServer.util.`fun`.dynamicQuery
 import com.linecorp.kotlinjdsl.query.spec.ExpressionOrderSpec
 import com.linecorp.kotlinjdsl.querydsl.expression.column
@@ -16,18 +17,18 @@ interface PostRepository : JpaRepository<Post, Long>, PostCustomRepository {
 }
 
 interface PostCustomRepository{
-    fun findPosts(pageable: Pageable, title: String): Page<Post>
+    fun findPosts(pageable: Pageable, searchCondition: SearchCondition): Page<Post>
 }
 
 class PostCustomRepositoryImpl(
     private val queryFactory: SpringDataQueryFactory
 ): PostCustomRepository {
-    override fun findPosts(pageable: Pageable, title: String): Page<Post> {
+    override fun findPosts(pageable: Pageable, searchCondition: SearchCondition): Page<Post> {
         val results = queryFactory.listQuery<Post> {
             select(entity(Post::class))
             from(entity(Post::class))
             where(
-                dynamicQuery(title = title)
+                dynamicQuery(searchCondition = searchCondition)
             )
             fetch(Post::member, joinType = JoinType.LEFT)
             limit(pageable.pageSize)
