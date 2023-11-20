@@ -39,6 +39,9 @@ class PostCustomRepositoryImpl(
         val countQuery = queryFactory.listQuery<Post> {
             select(entity(Post::class))
             from(entity(Post::class))
+            where(
+                dynamicQuery(searchCondition = searchCondition)
+            )
         }
 
         return PageableExecutionUtils.getPage(results, pageable){
