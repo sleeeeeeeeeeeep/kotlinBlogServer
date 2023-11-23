@@ -10,15 +10,18 @@ data class PostSaveReq(
     val content: String?,
     @field:NotNull(message = "멤버 없음")
     val memberId: Long?,
-)
+) {
 
-fun PostSaveReq.toEntity(): Post {
-    return Post(
-        title = this.title ?: "",
-        content = this.content ?: "",
-        member = Member.createFakeMember(memberId!!)
-    )
+    fun toEntity(): Post {
+        return Post(
+            title = this.title ?: "",
+            content = this.content ?: "",
+            member = Member.createFakeMember(memberId!!)
+        )
+    }
 }
+
+
 
 data class PostRes (
     val id: Long,

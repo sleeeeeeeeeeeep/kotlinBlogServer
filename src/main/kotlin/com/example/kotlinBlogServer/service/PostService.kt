@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.security.access.annotation.Secured
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.multipart.MultipartFile
 
 @Service
 class PostService (
@@ -37,5 +38,9 @@ class PostService (
     @Transactional(readOnly = true)
     fun findPostById(id: Long): PostRes {
         return postRepository.findById(id).orElseThrow().toDto()
+    }
+
+    fun savePostImg(image: MultipartFile) {
+
     }
 }

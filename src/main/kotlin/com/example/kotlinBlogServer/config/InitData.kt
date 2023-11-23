@@ -7,7 +7,6 @@ import com.example.kotlinBlogServer.domain.member.Role
 import com.example.kotlinBlogServer.domain.post.Post
 import com.example.kotlinBlogServer.domain.post.PostRepository
 import com.example.kotlinBlogServer.domain.post.PostSaveReq
-import com.example.kotlinBlogServer.domain.post.toEntity
 import io.github.serpro69.kfaker.faker
 import mu.two.KotlinLogging
 import org.springframework.boot.context.event.ApplicationReadyEvent

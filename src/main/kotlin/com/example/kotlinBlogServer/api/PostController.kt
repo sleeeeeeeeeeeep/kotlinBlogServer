@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 
 @RestController
 class PostController(
@@ -34,5 +35,10 @@ class PostController(
     @PostMapping("/post")
     fun save(@Valid @RequestBody dto: PostSaveReq): PostRes {
         return postService.savePost(dto)
+    }
+
+    @PostMapping("/post/img")
+    fun savePosting(image: MultipartFile): ResponseEntity<Unit> {
+        return ResponseEntity.ok().body(postService.savePostImg(image))
     }
 }
