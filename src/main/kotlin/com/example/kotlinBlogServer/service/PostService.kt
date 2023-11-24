@@ -1,6 +1,10 @@
 package com.example.kotlinBlogServer.service
 
-import com.example.kotlinBlogServer.domain.post.*
+import com.example.kotlinBlogServer.domain.post.PostRepository
+import com.example.kotlinBlogServer.domain.post.PostRes
+import com.example.kotlinBlogServer.domain.post.PostSaveReq
+import com.example.kotlinBlogServer.domain.post.toDto
+import com.example.kotlinBlogServer.service.common.FileUploaderService
 import com.example.kotlinBlogServer.util.dto.Search
 import com.example.kotlinBlogServer.util.dto.convertToSearchCondition
 import org.springframework.data.domain.Page
@@ -12,7 +16,8 @@ import org.springframework.web.multipart.MultipartFile
 
 @Service
 class PostService (
-    private val postRepository: PostRepository
+    private val postRepository: PostRepository,
+    private val localFileUploaderServiceImpl: FileUploaderService
 ) {
     //@PreAuthorize("hasAuthority('ADMIN')")
     @Secured(*["ROLE_SUPER", "ROLE_ADMIN"])
@@ -41,6 +46,6 @@ class PostService (
     }
 
     fun savePostImg(image: MultipartFile) {
-
+        localFileUploaderServiceImpl.upload(image)
     }
 }

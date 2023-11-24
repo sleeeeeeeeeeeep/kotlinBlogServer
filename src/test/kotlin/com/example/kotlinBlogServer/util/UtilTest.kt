@@ -1,12 +1,16 @@
 package com.example.kotlinBlogServer.util
 
-import com.example.kotlinBlogServer.config.security.JwtManager
-import com.example.kotlinBlogServer.config.security.PrincipalDetails
-import com.example.kotlinBlogServer.domain.member.Member
+import com.example.kotlinBlogServer.service.common.FileUploaderService
+import com.example.kotlinBlogServer.service.common.LocalFileUploaderServiceImpl
 import com.fasterxml.jackson.databind.ObjectMapper
 import mu.two.KotlinLogging
 import org.junit.jupiter.api.Test
+import org.springframework.http.MediaType
+import org.springframework.mock.web.MockMultipartFile
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.web.multipart.MultipartFile
+import java.nio.file.Files
+import java.nio.file.Paths
 
 class UtilTest {
     private val log = KotlinLogging.logger {  }
@@ -18,6 +22,26 @@ class UtilTest {
         val encodePassword = encoder.encode("1234")
 
         log.info { encodePassword }
+    }
+
+    @Test
+    fun localFileUploaderTest() {
+        val fileUploader: FileUploaderService = LocalFileUploaderServiceImpl()
+
+        val path = Paths.get("src/test/resources/test/test.png")
+        val name = "test.png"
+        val originalFileName = "test.png"
+        val contentType = MediaType.IMAGE_PNG_VALUE
+        val content = Files.readAllBytes(path)
+
+        val mockFile: MultipartFile = MockMultipartFile(
+            name,
+            originalFileName,
+            contentType,
+            content
+        )
+
+        fileUploader.upload(mockFile)
     }
 
 //    @Test

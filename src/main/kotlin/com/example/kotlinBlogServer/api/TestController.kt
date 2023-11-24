@@ -1,7 +1,6 @@
 package com.example.kotlinBlogServer.api
 
 import com.example.kotlinBlogServer.util.dto.SearchCondition
-import com.example.kotlinBlogServer.util.dto.SearchType
 import mu.two.KotlinLogging
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
