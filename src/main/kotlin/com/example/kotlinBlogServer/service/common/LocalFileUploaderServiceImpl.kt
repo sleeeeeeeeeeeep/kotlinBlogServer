@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.nio.file.Files
 import java.nio.file.Paths
+import java.util.UUID
 import kotlin.io.path.Path
 
 @Service
@@ -23,7 +24,13 @@ class LocalFileUploaderServiceImpl(
         Files.createDirectories(Paths.get(localImgFolder))
     }
 
-    override fun upload(file: MultipartFile) {
-        Files.write(Path(localImgFolder + "/" + file.originalFilename), file.bytes)
+    override fun upload(file: MultipartFile): String {
+        val uuid = UUID.randomUUID().toString()
+        val fileName = uuid + "_" + file.originalFilename
+        val filePath: String = "$localImgFolder/$fileName"
+
+        Files.write(Path(filePath), file.bytes)
+
+        return filePath
     }
 }

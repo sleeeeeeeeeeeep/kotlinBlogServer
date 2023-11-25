@@ -45,7 +45,7 @@ class PostService (
         return postRepository.findById(id).orElseThrow().toDto()
     }
 
-    fun savePostImg(image: MultipartFile) {
-        localFileUploaderServiceImpl.upload(image)
+    fun savePostImg(image: MultipartFile): String {
+        return localFileUploaderServiceImpl.upload(image)
     }
 }

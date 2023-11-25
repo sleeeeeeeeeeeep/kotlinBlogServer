@@ -1,4 +1,4 @@
-package com.example.kotlinBlogServer.api
+package com.example.kotlinBlogServer.apiAuth
 
 import com.example.kotlinBlogServer.domain.member.LoginDto
 import com.example.kotlinBlogServer.domain.member.MemberRes
@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-@RequestMapping("/auth")
 @RestController
 class AuthController (
     private val authService: AuthService

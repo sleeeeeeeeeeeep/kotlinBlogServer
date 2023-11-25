@@ -38,7 +38,7 @@ class PostController(
     }
 
     @PostMapping("/post/img")
-    fun savePosting(image: MultipartFile): ResponseEntity<Unit> {
+    fun savePosting(image: MultipartFile): ResponseEntity<String> {
         return ResponseEntity.ok().body(postService.savePostImg(image))
     }
 }
