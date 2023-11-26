@@ -18,7 +18,10 @@ class PostController(
 ) {
     @GetMapping("/posts")
     fun findPost(@PageableDefault(size = 10) pageable: Pageable,
-                 @RequestBody search: Search) : ResponseEntity<Page<PostRes>> {
+                 @RequestParam("searchFlag") searchFlag:String?,
+                 @RequestParam("keyword") keyword:String?
+                 ) : ResponseEntity<Page<PostRes>> {
+        val search = Search(searchFlag, keyword)
         return ResponseEntity.ok().body(postService.findAll(pageable, search))
     }
 

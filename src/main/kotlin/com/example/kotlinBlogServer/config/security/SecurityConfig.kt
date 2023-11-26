@@ -79,7 +79,7 @@ class SecurityConfig (
             .authorizeHttpRequests { authorize ->
                 authorize
                     //.requestMatchers(AntPathRequestMatcher("/**")).authenticated()
-                    //.requestMatchers(AntPathRequestMatcher("/v1/posts")).hasAnyRole("USER", "ADMIN")
+                    .requestMatchers(AntPathRequestMatcher("/v1/posts")).hasAnyRole("USER", "ADMIN")
                     .anyRequest().permitAll()
             }
             .logout { logout ->

@@ -6,7 +6,6 @@ import com.example.kotlinBlogServer.domain.post.PostSaveReq
 import com.example.kotlinBlogServer.domain.post.toDto
 import com.example.kotlinBlogServer.service.common.FileUploaderService
 import com.example.kotlinBlogServer.util.dto.Search
-import com.example.kotlinBlogServer.util.dto.convertToSearchCondition
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.security.access.annotation.Secured
@@ -20,7 +19,7 @@ class PostService (
     private val localFileUploaderServiceImpl: FileUploaderService
 ) {
     //@PreAuthorize("hasAuthority('ADMIN')")
-    @Secured(*["ROLE_SUPER", "ROLE_ADMIN"])
+    @Secured(*["ROLE_USER", "ROLE_ADMIN"])
     @Transactional(readOnly = true)
     fun findAll(pageable: Pageable, search: Search): Page<PostRes> {
         val searchCondition = search.convertToSearchCondition()

@@ -10,19 +10,21 @@ data class SearchCondition(
 data class Search(
     val searchFlag: String?,
     val keyword: String?
-)
+){
+    fun convertToSearchCondition(): SearchCondition {
+        var searchType: SearchType ?= null
 
-fun Search.convertToSearchCondition(): SearchCondition {
-    var searchType: SearchType ?= null
+        when(this.searchFlag?.lowercase()) {
+            "email" -> searchType = SearchType.EMAIL
+            "title" -> searchType = SearchType.TITLE
+            "content" -> searchType = SearchType.CONTENT
+        }
 
-    when(this.searchFlag?.lowercase()) {
-        "email" -> searchType = SearchType.EMAIL
-        "title" -> searchType = SearchType.TITLE
-        "content" -> searchType = SearchType.CONTENT
+        return SearchCondition(searchType, this.keyword)
     }
-
-    return SearchCondition(searchType, this.keyword)
 }
+
+
 
 enum class SearchType {
     EMAIL,
