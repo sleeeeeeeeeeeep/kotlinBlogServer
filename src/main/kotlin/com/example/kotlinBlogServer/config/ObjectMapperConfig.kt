@@ -22,10 +22,8 @@ class ObjectMapperConfig {
         val javaTimeModule = JavaTimeModule()
 
         javaTimeModule.addSerializer(LocalDateTime::class, CustomLocalDateTimeSerializer())
-
         mapper.registerModules(javaTimeModule)
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-
 
         mapper.registerModules(
             KotlinModule.Builder()
