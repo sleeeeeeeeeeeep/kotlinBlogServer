@@ -26,14 +26,14 @@ class Member(
         private set
 
     fun toDto() : MemberRes {
-        return MemberRes(
-            id = this.id!!,
+        val dto =  MemberRes(
             email = this.email,
             password = this.password,
-            role = this.role,
-            createdAt = this.createdAt,
-            updatedAt = this.updatedAt
+            role = this.role
         )
+
+        setBaseDtoProperty(dto)
+        return dto
     }
 
     override fun toString(): String {

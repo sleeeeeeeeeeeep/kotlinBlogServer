@@ -1,6 +1,7 @@
 package com.example.kotlinBlogServer.domain.member
 
 import com.example.kotlinBlogServer.config.BeanAccessor
+import com.example.kotlinBlogServer.util.dto.BaseDto
 import com.fasterxml.jackson.annotation.JsonFormat
 import jakarta.validation.constraints.NotNull
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -33,13 +34,7 @@ data class LoginDto(
 }
 
 data class MemberRes(
-    val id: Long,
     val email: String,
     val password: String,
     val role: Role,
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
-    val createdAt: LocalDateTime,
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
-    val updatedAt: LocalDateTime,
-)
+) : BaseDto()

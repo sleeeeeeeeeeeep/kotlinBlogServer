@@ -1,5 +1,7 @@
 package com.example.kotlinBlogServer.domain
 
+import com.example.kotlinBlogServer.domain.post.PostRes
+import com.example.kotlinBlogServer.util.dto.BaseDto
 import com.fasterxml.jackson.annotation.JsonFormat
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
@@ -24,6 +26,12 @@ abstract class AuditingEntity (
     @Column(name = "updated_at")
     var updatedAt: LocalDateTime = LocalDateTime.now()
         private set
+
+    protected fun setBaseDtoProperty(dto: BaseDto) {
+        dto.id = this.id!!
+        dto.createdAt = this.createdAt
+        dto.updatedAt = this.updatedAt
+    }
 }
 
 @EntityListeners(value = [AuditingEntityListener::class])

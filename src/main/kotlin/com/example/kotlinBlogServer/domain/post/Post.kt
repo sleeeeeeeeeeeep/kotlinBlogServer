@@ -26,17 +26,23 @@ class Post(
     var member: Member = member
         private set
 
+    fun toDto(): PostRes{
+        val dto =  PostRes(
+            title = this.title,
+            content = this.content,
+            member = this.member.toDto()
+        )
+
+        setBaseDtoProperty(dto)
+
+        return dto
+    }
+
+
+
     override fun toString(): String {
         return "Post(id = '$id', title='$title', content='$content', member=$member)"
     }
 
 }
 
-fun Post.toDto(): PostRes{
-    return PostRes(
-        id = this.id!!,
-        title = this.title,
-        content = this.content,
-        member = this.member.toDto()
-    )
-}

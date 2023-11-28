@@ -3,7 +3,6 @@ package com.example.kotlinBlogServer.service
 import com.example.kotlinBlogServer.domain.post.PostRepository
 import com.example.kotlinBlogServer.domain.post.PostRes
 import com.example.kotlinBlogServer.domain.post.PostSaveReq
-import com.example.kotlinBlogServer.domain.post.toDto
 import com.example.kotlinBlogServer.service.common.FileUploaderService
 import com.example.kotlinBlogServer.util.dto.Search
 import org.springframework.data.domain.Page

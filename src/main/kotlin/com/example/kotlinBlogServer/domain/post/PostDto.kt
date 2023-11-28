@@ -2,6 +2,7 @@ package com.example.kotlinBlogServer.domain.post
 
 import com.example.kotlinBlogServer.domain.member.Member
 import com.example.kotlinBlogServer.domain.member.MemberRes
+import com.example.kotlinBlogServer.util.dto.BaseDto
 import jakarta.validation.constraints.NotNull
 
 data class PostSaveReq(
@@ -21,11 +22,8 @@ data class PostSaveReq(
     }
 }
 
-
-
 data class PostRes (
-    val id: Long,
     val title: String,
     val content: String,
     val member: MemberRes
-)
+) : BaseDto()
