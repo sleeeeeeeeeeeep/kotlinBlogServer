@@ -10,8 +10,8 @@ import jakarta.persistence.*
 class Comment(
     id: Long = 0,
     content: String,
-    post: Post
-
+    post: Post,
+    member: Member
 ) : AuditingEntity(id) {
 
     @Column(name = "content", nullable = false)
@@ -21,5 +21,14 @@ class Comment(
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = Post::class)
     var post: Post = post
         private set
+
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Member::class)
+    var member: Member = member
+        private set
+
+    override fun toString(): String {
+        return "Comment(content='$content', post=$post, member=$member)"
+    }
+
 
 }
