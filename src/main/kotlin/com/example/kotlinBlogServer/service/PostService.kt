@@ -3,6 +3,7 @@ package com.example.kotlinBlogServer.service
 import com.example.kotlinBlogServer.domain.post.PostRepository
 import com.example.kotlinBlogServer.domain.post.PostRes
 import com.example.kotlinBlogServer.domain.post.PostSaveReq
+import com.example.kotlinBlogServer.exception.PostNotFoundException
 import com.example.kotlinBlogServer.service.common.FileUploaderService
 import com.example.kotlinBlogServer.util.dto.Search
 import org.springframework.data.domain.Page
@@ -34,13 +35,13 @@ class PostService (
     }
 
     @Transactional
-    fun deleteMember(id: Long){
+    fun deletePost(id: Long){
         return postRepository.deleteById(id)
     }
 
     @Transactional(readOnly = true)
-    fun findPostById(id: Long): PostRes {
-        return postRepository.findById(id).orElseThrow().toDto()
+    fun findById(id: Long): PostRes {
+        return postRepository.findById(id).orElseThrow{ throw PostNotFoundException(id.toString()) }.toDto()
     }
 
     fun savePostImg(image: MultipartFile): String {

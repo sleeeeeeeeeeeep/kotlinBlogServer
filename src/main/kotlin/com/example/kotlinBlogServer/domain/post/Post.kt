@@ -38,8 +38,6 @@ class Post(
         return dto
     }
 
-
-
     override fun toString(): String {
         return "Post(id = '$id', title='$title', content='$content', member=$member)"
     }

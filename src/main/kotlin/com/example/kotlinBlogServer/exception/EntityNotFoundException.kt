@@ -9,3 +9,11 @@ sealed class EntityNotFoundException(message: String?): BusinessException(
 class MemberNotFoundException(id:String): EntityNotFoundException(
     "$id 없음"
 )
+
+class CommentNotFoundException(id:String): EntityNotFoundException(
+    "$id 없음"
+)
+
+class PostNotFoundException(id:String): EntityNotFoundException(
+    "$id 없음"
+)

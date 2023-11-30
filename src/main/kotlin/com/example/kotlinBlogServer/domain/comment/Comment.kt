@@ -26,6 +26,17 @@ class Comment(
     var member: Member = member
         private set
 
+
+    fun toDto(): CommentRes {
+        val dto = CommentRes(
+            member = this.member.toDto(),
+            content = this.content
+        )
+
+        setBaseDtoProperty(dto)
+        return dto
+    }
+
     override fun toString(): String {
         return "Comment(content='$content', post=$post, member=$member)"
     }

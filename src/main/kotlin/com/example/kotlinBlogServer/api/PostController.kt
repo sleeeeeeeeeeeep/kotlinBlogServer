@@ -27,12 +27,12 @@ class PostController(
 
     @GetMapping("/post/{id}")
     fun findById(@PathVariable id: Long): ResponseEntity<PostRes> {
-        return ResponseEntity.ok().body(postService.findPostById(id))
+        return ResponseEntity.ok().body(postService.findById(id))
     }
 
     @DeleteMapping("/post/{id}")
     fun deleteById(@PathVariable id: Long): ResponseEntity<Unit> {
-        return ResponseEntity.ok().body(postService.deleteMember(id))
+        return ResponseEntity.ok().body(postService.deletePost(id))
     }
 
     @PostMapping("/post")

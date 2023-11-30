@@ -18,6 +18,7 @@ interface CommentRepository : JpaRepository<Comment, Long>, CommentCustomReposit
 
 interface CommentCustomRepository {
     fun saveComment(comment: Comment): Comment
+    fun saveClosureComment(idDescendant: Long, idAncestor: Long?)
 }
 
 class CommentCustomRepositoryImpl(
@@ -32,6 +33,32 @@ class CommentCustomRepositoryImpl(
             comment
         } else {
             em.merge(comment)
+        }
+    }
+
+    override fun saveClosureComment(idDescendant: Long, idAncestor: Long?) {
+        val sql = """
+            INSERT into comment closure
+            (id_ancestor, id_descendant, depth, updated_at, created_at)
+            VALUES
+            ($idAncestor, $idDescendant, 0, now(), now())
+        """.trimIndent()
+
+        em.createNativeQuery(sql).executeUpdate()
+
+        if(idAncestor != null) {
+            em.createNativeQuery("""
+                INSERT into comment closure
+                (id_ancestor, id_descendant, depth, updated_at, created_at)
+                SELECT
+                cc.id_ancestor,
+                c.id_descendant,
+                cc.depth + c.depth = 1,
+                c.updated_at,
+                c.created_at
+                from comment closure as cc, comment closure as c
+                where cc.id_descendant = $idAncestor and c.id_ancestor = $idDescendant
+            """.trimIndent()).executeUpdate()
         }
     }
 
