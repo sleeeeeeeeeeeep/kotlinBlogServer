@@ -5,7 +5,7 @@ import com.example.kotlinBlogServer.domain.member.MemberRes
 import com.example.kotlinBlogServer.domain.post.Post
 import com.example.kotlinBlogServer.util.dto.BaseDto
 
-data class CommentSaveDto (
+data class CommentReqDto (
     val memberId: Long,
     val content: String,
     val postId: Long,
